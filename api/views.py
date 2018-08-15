@@ -1,6 +1,7 @@
 from core.models import AuthUserRegistration
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.core.serializers import json
+import json
 from django.http import HttpResponse
 import random
 from django.shortcuts import render
@@ -24,6 +25,8 @@ def account(request):
         date_of_birth = request.POST.get('date_of_birth',None)
         country_of_citizenship = request.POST.get('country_of_citizenship','')
         country_of_residence = request.POST.get('country_of_residence','')
+        emergency_contact = request.POST.get('emergency_contact','')
+        account_type = request.POST.get('account_type','')
 
 
 
@@ -35,7 +38,9 @@ def account(request):
                                             name=name,address=address,state=state,
                                             zipcode=zipcode,date_of_birth=date_of_birth,
                                             country_of_citizenship=country_of_citizenship,
-                                            country_of_residence=country_of_residence)
+                                            country_of_residence=country_of_residence,
+                                            emergency_contact=emergency_contact,
+                                            account_type=account_type)
             user_info.save()
             response = json.dumps({'response': 'ok', 'result': user_info})
             return HttpResponse(response, content_type='application/json')
@@ -44,7 +49,8 @@ def account(request):
         return HttpResponse(response, content_type='application/json')
 
     user_id = request.GET.get('user_id','')
-    if( user_id):
+
+    if( user_id ) :
         user = User.objects.get(id=user_id)
         user_info = AuthUserRegistration.objects.get(user=user)
         response = json.dumps({'response': 'ok', 'result': user_info})
@@ -53,6 +59,25 @@ def account(request):
     response = json.dumps({'response': 'error', 'result': "Id not provided"})
     return HttpResponse(response, content_type='application/json')
 
+
+@csrf_exempt
+def signin(request):
+    if request.method == 'POST':
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+                    response = json.dumps({'response': 'ok', 'result': user})
+
+        else:
+                    response = json.dumps({'response': 'error', 'result': "Username or password not provided"})
+
+    else:
+        response = json.dumps({'response': 'error', 'result': "something went wrong"})
+
+    return HttpResponse(response, content_type='application/json')
 
 
 

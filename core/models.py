@@ -13,7 +13,7 @@ class AuthUserRegistration(models.Model):
     address = models.CharField(max_length=100, blank=True)
     state = models.CharField(max_length=100, blank=True)
     zipcode = models.CharField(max_length=100, blank=True)
-
+    account_type= models.CharField(max_length=100, blank=True)
     phone = models.CharField(max_length=100, blank=True)
     email = models.CharField(max_length=100, blank=True)
     date_of_birth = models.DateField()
