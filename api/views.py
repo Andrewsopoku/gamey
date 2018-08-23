@@ -32,16 +32,26 @@ def account(request):
 
         if username and password:
             verifier = random.randint(1000,9999)
-            user = User.objects.create_user(username=username, password=password,
-                                           )
-            user_info = AuthUserRegistration(user=user,email=email,phone=phone,
-                                            name=name,address=address,state=state,
-                                            zipcode=zipcode,date_of_birth=date_of_birth,
-                                            country_of_citizenship=country_of_citizenship,
-                                            country_of_residence=country_of_residence,
-                                            emergency_contact=emergency_contact,
-                                            account_type=account_type)
-            user_info.save()
+
+            try:
+
+                user = User.objects.create_user(username=username, password=password,
+                                               )
+                user_info = AuthUserRegistration(user=user,email=email,phone=phone,
+                                                name=name,address=address,state=state,
+                                                zipcode=zipcode,date_of_birth=date_of_birth,
+                                                country_of_citizenship=country_of_citizenship,
+                                                country_of_residence=country_of_residence,
+                                                emergency_contact=emergency_contact,
+                                                account_type=account_type)
+                user_info.save()
+
+            except:
+                response = json.dumps({'response': 'error', 'result': "Username already exist."})
+                return HttpResponse(response, content_type='application/json')
+
+
+
             response = json.dumps({'response': 'ok', 'result': user_info})
             return HttpResponse(response, content_type='application/json')
 
@@ -66,13 +76,17 @@ def signin(request):
         username = request.POST.get('username','')
         password = request.POST.get('password','')
 
-        user = authenticate(request, username=username, password=password)
+        if username and password:
 
-        if user is not None:
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
                     response = json.dumps({'response': 'ok', 'result': user})
 
+            else:
+                    response = json.dumps({'response': 'error', 'result': "Wrong username or password"})
         else:
-                    response = json.dumps({'response': 'error', 'result': "Username or password not provided"})
+            response = json.dumps({'response': 'error', 'result': "Username or password not provided"})
 
     else:
         response = json.dumps({'response': 'error', 'result': "something went wrong"})
