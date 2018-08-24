@@ -16,10 +16,12 @@ class AuthUserRegistration(models.Model):
     account_type= models.CharField(max_length=100, blank=True)
     phone = models.CharField(max_length=100, blank=True)
     email = models.CharField(max_length=100, blank=True)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(null=True,auto_now_add=True)
     country_of_citizenship = models.CharField(max_length=100, blank=True)
     country_of_residence = models.CharField(max_length=100, blank=True)
     emergency_contact = models.CharField(max_length=100, blank=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
 
     active = models.BooleanField(default=False)
 

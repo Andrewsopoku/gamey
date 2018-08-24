@@ -2,6 +2,7 @@ from core.models import AuthUserRegistration
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 import json
+from django.core import serializers
 from django.http import HttpResponse
 import random
 from django.shortcuts import render
@@ -13,7 +14,9 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def account(request):
     if request.method == 'POST':
+        print ("yes")
         username = request.POST.get('username','')
+        print(username)
         password = request.POST.get('password','')
         email = request.POST.get('email','')
         phone = request.POST.get('phone','')
@@ -33,10 +36,11 @@ def account(request):
         if username and password:
             verifier = random.randint(1000,9999)
 
-            try:
 
+            try:
                 user = User.objects.create_user(username=username, password=password,
                                                )
+
                 user_info = AuthUserRegistration(user=user,email=email,phone=phone,
                                                 name=name,address=address,state=state,
                                                 zipcode=zipcode,date_of_birth=date_of_birth,
@@ -45,14 +49,14 @@ def account(request):
                                                 emergency_contact=emergency_contact,
                                                 account_type=account_type)
                 user_info.save()
-
             except:
-                response = json.dumps({'response': 'error', 'result': "Username already exist."})
+
+                response = json.dumps({'response': 'error', 'result': "Username already Exist"})
                 return HttpResponse(response, content_type='application/json')
 
+            serialized_queryset = serializers.serialize('json', AuthUserRegistration.objects.filter(user= user_info.user))
 
-
-            response = json.dumps({'response': 'ok', 'result': user_info})
+            response = json.dumps({'response': 'ok', 'result':serialized_queryset})
             return HttpResponse(response, content_type='application/json')
 
         response = json.dumps({'response': 'error', 'result': "Username or password not provided"})
