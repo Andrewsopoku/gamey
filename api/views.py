@@ -85,7 +85,9 @@ def signin(request):
             user = authenticate(request, username=username, password=password)
 
             if user is not None:
-                    response = json.dumps({'response': 'ok', 'result': user})
+                    user_serial = serializers.serialize('json', AuthUserRegistration.objects.filter(user= user))
+
+                    response = json.dumps({'response': 'ok', 'result': user_serial})
 
             else:
                     response = json.dumps({'response': 'error', 'result': "Wrong username or password"})
