@@ -32,16 +32,12 @@ class Scheme(models.Model):
 class Deposits(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     amount = models.DecimalField(max_digits=8, decimal_places=4)
-    quantity = models.IntegerField(default=1)
-    active = models.BooleanField(default=True)
-    months_paid = models.IntegerField(default=0)
-    cummulated_interest = models.DecimalField(max_digits=8, decimal_places=4)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
 
-class MonthlyInterest(models.Model):
-    deposit = models.OneToOneField(Deposits, on_delete=models.CASCADE, null=True)
+class Gains(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     amount = models.DecimalField(max_digits=8, decimal_places=4)
     created_at = models.DateField(auto_now_add=True)
 

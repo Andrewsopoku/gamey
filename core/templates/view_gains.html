@@ -22,7 +22,7 @@
                     <h4 class="mb-2 mb-sm-0 pt-1">
                         <a href="https://mdbootstrap.com/material-design-for-bootstrap/" target="_blank">Dashboard </a>
                         <span>/</span>
-                        <span>View Users</span>
+                        <span>View Gains</span>
                     </h4>
 
                     <form class="d-flex justify-content-center">
@@ -52,7 +52,7 @@
 
                         <!-- Card header -->
                         <div class="card-header text-center">
-                            View Users
+                            Deposits
                         </div>
 
                         <!--Card content-->
@@ -63,10 +63,10 @@
                             <tr>
 
                                 <th class="th-lg">Username</th>
-                                <th class="th-lg">Name</th>
-                                 <th class="th-lg">Account Type</th>
+                                <th class="th-lg">Amount</th>
+                                 <th class="th-lg">Date Gained</th>
 
-                                <th class="th-lg">Phone number</th>
+
 
                                 <th class="th-lg">Action</th>
 
@@ -74,40 +74,29 @@
 
                 </thead>
                                 <tbody>
-                        {% for user in users %}
+                        {% for user in gains %}
                                 <tr>
                                 <td>
                                 {{ user.user }}
                                 </td>
                                 <td>
-                                {{ user.name }}
+                                {{ user.amount }}
                                 </td>
                                 <td>
-                                {{ user.account_type }}
+                                {{ user.created_at}}
                                 </td>
-                                <td>
-                                {{ user.phone }}
-                                </td>
+
                               
                                 <td>
-                                     <a href="{% url 'core:view_user_detail'  pk=user.id %}"><button class="btn btn-primary btn-sm my-0 p waves-effect waves-light" type="submit">
+                                     <a href="{% url 'core:view_detail_detail'  pk=user.id %}" class="btn btn-primary btn-sm my-0 p waves-effect waves-light" type="submit">
 
-                                         View Details
-                                         </button>
+                                         View Deposits
                         </a>
-                                        <a href="{% url 'core:view_deposit_detail'  pk=user.id %}"><button class="btn btn-success btn-sm my-0 p waves-effect waves-light" type="submit">
+                                         <button class="btn btn-success btn-sm my-0 p waves-effect waves-light" type="submit">
 
-                                        View Deposits
+                                       Add Deposits
                         </button>
-                                            </a>
-                                       <a href="{% url 'core:view_gain_detail'  pk=user.id %}">  <button class="btn btn-warning btn-sm my-0 p waves-effect waves-light" type="submit">
 
-                                         View Gains
-                        </button></a>
-                                         <button class="btn btn-danger btn-sm my-0 p waves-effect waves-light" type="submit">
-
-                                         Block
-                        </button>
                                 </td>
                                 </tr>
                         {% endfor %}

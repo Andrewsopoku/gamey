@@ -1,5 +1,5 @@
 from core.forms import LoginForm
-from core.models import AuthUserRegistration
+from core.models import AuthUserRegistration, Deposits, Gains
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -47,13 +47,54 @@ def view_user(request):
     return render(request,'view_users.html',context)
 
 
+@login_required(login_url=('core:signin'))
+def view_deposit(request):
+    deposits = Deposits.objects.all()
+    context = {"deposits":deposits}
+    return render(request,'view_deposits.html',context)
+
+
+@login_required(login_url=('core:signin'))
+def view_gain(request):
+    gains = Gains.objects.all()
+    context = {"gains":gains}
+    return render(request,'view_gains.html',context)
+
+
+
 
 @login_required(login_url=('core:signin'))
 def view_user_detail(request,pk):
-    print(pk)
+
     users = AuthUserRegistration.objects.get(id=pk)
     context = {"users":users}
     return render(request,'view_user_detail.html',context)
+
+
+@login_required(login_url=('core:signin'))
+def view_deposit_detail(request,pk):
+
+    deposits = Deposits.objects.filter(id=pk)
+    users = AuthUserRegistration.objects.get(id=pk)
+    total = 0
+    for i in deposits:
+        total += i.amount
+
+    context = {"deposits":deposits,"users":users, "total":total}
+    return render(request,'view_deposit_detail.html',context)
+
+
+@login_required(login_url=('core:signin'))
+def view_gain_detail(request,pk):
+
+    gains = Gains.objects.filter(id=pk)
+    users = AuthUserRegistration.objects.get(id=pk)
+    total = 0
+    for i in gains:
+        total += i.amount
+
+    context = {"gains":gains,"users":users, "total":total}
+    return render(request,'view_gain_detail.html',context)
 
 @login_required(login_url=('core:signin'))
 def sign_out(request):
