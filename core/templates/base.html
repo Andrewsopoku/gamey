@@ -12,6 +12,8 @@
     <link href="https://mdbootstrap.com/previews/templates/saas/css/bootstrap.min.css" rel="stylesheet">
     <!-- Material Design Bootstrap -->
     <link href="https://mdbootstrap.com/previews/templates/saas/css/mdb.css" rel="stylesheet">
+    <link  href="{% static 'css/iziToast.min.css' %}" rel="stylesheet" >
+
 
 {##}
 {#        #}
@@ -136,7 +138,6 @@
     <!-- Bootstrap core JavaScript -->
     <script type="text/javascript" src="https://mdbootstrap.com/previews/templates/saas/js/bootstrap.min.js"></script>
     <!-- MDB core JavaScript -->
-    <script type="text/javascript" src="https://mdbootstrap.com/previews/templates/saas/js/mdb.min.js"></script>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
@@ -174,12 +175,21 @@
         {% for message in messages %}
             {% if message.tags == 'error' %}
             <script type="text/javascript">
+
                 iziToast.error({
                     message: '{{ message|safe }}',
-                    image: "{% static 'img//mPedigree_Logo_Knight_Horse_Squa.png' %}",
+
                     position: 'topCenter'
                 });
             </script>
+            {% else %}
+                <script type="text/javascript">
+                iziToast.success({
+                    message: '{{ message|safe }}',
+
+                    position: 'topCenter'
+                });
+                </script>
             {% endif %}
 
         {% endfor %}

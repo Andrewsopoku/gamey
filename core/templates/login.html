@@ -21,21 +21,26 @@
                                     </div>
 
                                     <!--Body-->
+                                    <form action="{% url 'core:signin' %}" method="POST">
+                                    {% csrf_token %}
+
+
                                     <div class="md-form mb-0">
                                         <i class="fa fa-user prefix white-text"></i>
-                                        <input type="text" id="orangeForm-name" class="form-control">
-                                        <label for="orangeForm-name">Your name</label>
+                                        {{ signin_form.username }}
+                                        <label for="id_username">Your username</label>
                                     </div>
 
 
                                     <div class="md-form mb-0">
                                         <i class="fa fa-lock prefix white-text"></i>
-                                        <input type="password" id="orangeForm-pass" class="form-control">
-                                        <label for="orangeForm-pass">Your password</label>
+                                        {{ signin_form.password }}
+                                        <label for="id_password">Your password</label>
                                     </div>
 
+
                                     <div class="text-center">
-                                        <button class="btn blue-gradient btn-lg waves-effect waves-light">Sign In</button>
+                                        <button class="btn blue-gradient btn-lg waves-effect waves-light" type="submit">Sign In</button>
                                         <hr>
                                         <div class="inline-ul text-center d-flex justify-content-center">
                                             <a class="p-2 m-2 fa-lg tw-ic">
@@ -49,7 +54,7 @@
                                             </a>
                                         </div>
                                     </div>
-
+                                </form>
                                 </div>
                             </div>
                             <!--/Form with header-->
