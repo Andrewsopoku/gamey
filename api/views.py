@@ -92,12 +92,12 @@ def signin(request):
                     response = json.dumps({'status': 'ok', 'user_id': user_serial.id})
 
             else:
-                    response = json.dumps({'status': 'error', 'user_id': "Wrong username or password"})
+                    response = json.dumps({'status': 'error', 'result': "Wrong username or password"})
         else:
-            response = json.dumps({'status': 'error', 'user_id': "Username or password not provided"})
+            response = json.dumps({'status': 'error', 'result': "Username or password not provided"})
 
     else:
-        response = json.dumps({'status': 'error', 'user_id': "something went wrong"})
+        response = json.dumps({'status': 'error', 'result': "something went wrong"})
 
     return HttpResponse(response, content_type='application/json')
 
