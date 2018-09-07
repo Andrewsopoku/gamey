@@ -30,16 +30,22 @@ class Scheme(models.Model):
     amount = models.DecimalField(max_digits=8, decimal_places=4)
 
 class Deposits(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     amount = models.DecimalField(max_digits=8, decimal_places=4)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
 
 
 class Gains(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     amount = models.DecimalField(max_digits=8, decimal_places=4)
     created_at = models.DateField(auto_now_add=True)
+
+class Losts(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    amount = models.DecimalField(max_digits=8, decimal_places=4)
+    created_at = models.DateField(auto_now_add=True)
+
 
 
 

@@ -1,0 +1,98 @@
+
+{% extends 'dashboardbase.html' %}
+
+
+        {% block title %}New Factory | Fast Label{% endblock %}
+
+        {% block content %}
+            {% load static %}
+
+
+
+
+            <div class="container-fluid mt-5">
+<br>
+<br>
+            <!-- Heading -->
+            <div class="card mb-4 wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
+
+                <!--Card content-->
+                <div class="card-body d-sm-flex justify-content-between">
+
+                    <h4 class="mb-2 mb-sm-0 pt-1">
+                        <a href="https://mdbootstrap.com/material-design-for-bootstrap/" target="_blank">Dashboard </a>
+                        <span>/</span>
+                        <span>Add {{ user.name }} Gains</span>
+                    </h4>
+
+                    <form class="d-flex justify-content-center">
+                        <!-- Default input -->
+                        <input type="search" placeholder="Type your query" aria-label="Search" class="form-control">
+                        <button class="btn btn-primary btn-sm my-0 p waves-effect waves-light" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+            <!-- Heading -->
+
+            <!--Grid row-->
+            <div class="row wow fadeIn" style="visibility: visible; animation-name: fadeIn;">
+
+                <!--Grid column-->
+
+                <!--Grid column-->
+                <div class="col-md-12 mb-4">
+
+                    <!--Card-->
+                    <div class="card mb-4">
+
+                        <!-- Card header -->
+                        <div class="card-header text-center">
+                           Add Deposits
+                        </div>
+
+                        <!--Card content-->
+                            <div class="card-body">
+                                <form method="post" action="{% url 'core:add_user_deposit' pk=user.id %}">
+                                  <div class="row">
+                                      <div class="col-md-10">
+
+                                               {% csrf_token %}
+                                              <div class="col-md-4">
+
+                                              </div>
+                                              <div class="col-md-4">
+                                                  <div class="md-form mb-0">
+                                                      {{ amt_form.amt }}
+                                                      <label for="id_amt">Enter Amount</label>
+                                                  </div>
+
+                                              </div>
+                                              <div class="col-md-4">
+                                                    <button type="submit" class="btn btn-success btn-sm my-0 p waves-effect waves-light" type="submit">Add Deposit</button>
+                                              </div>
+
+                                      </div>
+                                  </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--/.Card-->
+
+
+                </div>
+                <!--Grid column-->
+
+            </div>
+            <!--Grid row-->
+
+            <!--Grid row-->
+
+        </div>
+        {% endblock %}

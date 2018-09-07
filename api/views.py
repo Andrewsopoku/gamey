@@ -1,9 +1,9 @@
-from core.models import AuthUserRegistration
+from core.models import AuthUserRegistration, Deposits, Gains
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 import json
 from django.core import serializers
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import random
 from django.shortcuts import render
 
@@ -30,7 +30,7 @@ def account(request):
         country_of_residence = request.POST.get('country_of_residence','')
         emergency_contact = request.POST.get('emergency_contact','')
         account_type = request.POST.get('account_type','')
-
+        response = {}
 
 
         if username and password:
@@ -51,15 +51,15 @@ def account(request):
                 user_info.save()
             except:
 
-                response = json.dumps({'response': 'error', 'result': "Username already Exist"})
+                response = json.dumps({'status': 'error', 'result': "Username already Exist"})
                 return HttpResponse(response, content_type='application/json')
 
-            serialized_queryset = serializers.serialize('json', AuthUserRegistration.objects.filter(user= user_info.user))
 
-            response = json.dumps({'response': 'ok', 'result':serialized_queryset})
+
+            response = json.dumps({'status': 'ok','user_id':user_info.id })
             return HttpResponse(response, content_type='application/json')
 
-        response = json.dumps({'response': 'error', 'result': "Username or password not provided"})
+        response = json.dumps({'status': 'error', 'result': "Username or password not provided"})
         return HttpResponse(response, content_type='application/json')
 
     user_id = request.GET.get('user_id','')
@@ -67,10 +67,10 @@ def account(request):
     if( user_id ) :
         user = User.objects.get(id=user_id)
         user_info = AuthUserRegistration.objects.get(user=user)
-        response = json.dumps({'response': 'ok', 'result': user_info})
+        response = json.dumps({'status': 'ok', 'result': user_info})
         return HttpResponse(response, content_type='application/json')
 
-    response = json.dumps({'response': 'error', 'result': "Id not provided"})
+    response = json.dumps({'status': 'error', 'result': "Id not provided"})
     return HttpResponse(response, content_type='application/json')
 
 
@@ -85,20 +85,117 @@ def signin(request):
             user = authenticate(request, username=username, password=password)
 
             if user is not None:
-                    user_serial = serializers.serialize('json', AuthUserRegistration.objects.filter(user= user))
+                    user_serial = AuthUserRegistration.objects.get(user= user)
 
-                    response = json.dumps({'response': 'ok', 'result': user_serial})
+
+
+                    response = json.dumps({'status': 'ok', 'user_id': user_serial.id})
 
             else:
-                    response = json.dumps({'response': 'error', 'result': "Wrong username or password"})
+                    response = json.dumps({'status': 'error', 'user_id': "Wrong username or password"})
         else:
-            response = json.dumps({'response': 'error', 'result': "Username or password not provided"})
+            response = json.dumps({'status': 'error', 'user_id': "Username or password not provided"})
 
     else:
-        response = json.dumps({'response': 'error', 'result': "something went wrong"})
+        response = json.dumps({'status': 'error', 'user_id': "something went wrong"})
 
     return HttpResponse(response, content_type='application/json')
 
+
+@csrf_exempt
+def get_summary(request):
+    if request.method == 'POST':
+        try:
+            userid = request.POST['user_id']
+        except:
+            response = json.dumps({'status': 'error',"result": "user id missing"})
+        else:
+            response = {}
+
+            user = AuthUserRegistration.objects.get(id= userid).user
+            if user:
+                # Get Deposit sum:
+                depo = Deposits.objects.filter(user=user)
+                depo_total =0
+                for i in depo:
+                    depo_total +=i.amount
+
+                # Get Gains sum:
+                gain = Gains.objects.filter(user=user)
+                gaintotal = 0
+                for i in gain:
+                    gaintotal+=i.amount
+
+
+                response = json.dumps({'status': 'ok', 'total_deposit': str(depo_total),"total_gain":str(gaintotal)})
+
+            else:
+                        response = json.dumps({'status': 'error',"result": "user does not exist"})
+
+
+
+        return HttpResponse(response, content_type='application/json')
+
+@csrf_exempt
+def get_deposit_list(request):
+    if request.method == 'POST':
+        try:
+            userid = request.POST['user_id']
+        except:
+            response = json.dumps({'status': 'error',"result": "user id missing"})
+        else:
+            response = {}
+
+            user = AuthUserRegistration.objects.get(id= userid).user
+            if user:
+                # Get Deposit sum:
+                depo = Deposits.objects.filter(user=user)
+                depo_total =0
+                for i in depo:
+                    depo_total +=i.amount
+
+                # Get Gains sum:
+                data = list(depo.values())
+                return JsonResponse({"deposit":data,"deposit_total":str(depo_total)}, safe=False)  # or JsonResponse({'data': data})
+
+
+
+            else:
+                        response = json.dumps({'status': 'error',"result": "user does not exist"})
+
+
+
+        return HttpResponse(response, content_type='application/json')
+
+def get_gain_list(request):
+    if request.method == 'POST':
+        try:
+            userid = request.POST['user_id']
+        except:
+            response = json.dumps({'status': 'error',"result": "user id missing"})
+        else:
+            response = {}
+
+            user = AuthUserRegistration.objects.get(id= userid).user
+            if user:
+                # Get Deposit sum:
+                depo = Gains.objects.filter(user=user)
+                depo_total =0
+                for i in depo:
+                    depo_total +=i.amount
+
+                # Get Gains sum:
+                data = list(depo.values())
+                return JsonResponse({"gain":data,"gain_total":str(depo_total)}, safe=False)  # or JsonResponse({'data': data})
+
+
+
+            else:
+                        response = json.dumps({'status': 'error',"result": "user does not exist"})
+
+
+
+        return HttpResponse(response, content_type='application/json')
 
 
 
