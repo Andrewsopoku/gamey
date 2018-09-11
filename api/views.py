@@ -113,6 +113,7 @@ def get_summary(request):
             response = {}
 
             user = AuthUserRegistration.objects.get(id= userid).user
+            name = AuthUserRegistration.objects.get(id= userid).name
             if user:
                 # Get Deposit sum:
                 depo = Deposits.objects.filter(user=user)
@@ -127,7 +128,7 @@ def get_summary(request):
                     gaintotal+=i.amount
 
 
-                response = json.dumps({'status': 'ok', 'total_deposit': str(depo_total),"total_gain":str(gaintotal)})
+                response = json.dumps({'status': 'ok', 'total_deposit': str(depo_total),"total_gain":str(gaintotal),'name':name})
 
             else:
                         response = json.dumps({'status': 'error',"result": "user does not exist"})
