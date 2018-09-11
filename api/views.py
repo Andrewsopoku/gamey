@@ -1,4 +1,4 @@
-from core.models import AuthUserRegistration, Deposits, Gains
+from core.models import AuthUserRegistration, Deposits, Gains, Losts
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 import json
@@ -127,8 +127,13 @@ def get_summary(request):
                 for i in gain:
                     gaintotal+=i.amount
 
+                lose = Losts.objects.filter(user=user)
+                losttotal = 0
+                for i in lose:
+                    losttotal+=i.amount
 
-                response = json.dumps({'status': 'ok', 'total_deposit': str(depo_total),"total_gain":str(gaintotal),'name':name})
+
+                response = json.dumps({'status': 'ok', 'total_deposit': str(depo_total),"total_gain":str(gaintotal),'name':name, 'total_lose': str(losttotal)})
 
             else:
                         response = json.dumps({'status': 'error',"result": "user does not exist"})
