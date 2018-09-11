@@ -1,4 +1,4 @@
-from core.models import AuthUserRegistration, Deposits, Gains, Losts, DepositRequest
+from core.models import AuthUserRegistration, Deposits, Gains, Losts, DepositRequest, WithdrawalRequest
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 import json
@@ -174,6 +174,37 @@ def depositrequest(request):
         return HttpResponse(response, content_type='application/json')
 
 
+
+
+@csrf_exempt
+def withdrawalrequest(request):
+    if request.method == 'POST':
+        try:
+            userid = request.POST['user_id']
+            amt = request.POST['amount']
+        except:
+            response = json.dumps({'status': 'error',"result": "user id missing"})
+        else:
+            response = {}
+
+            user = AuthUserRegistration.objects.get(id= userid).user
+
+            if user:
+                # Get Deposit sum:
+                depo = WithdrawalRequest(user=user,amount=amt)
+                depo.save()
+
+
+                response = json.dumps({'status': 'ok', 'result': ""})
+
+            else:
+                        response = json.dumps({'status': 'error',"result": "user does not exist"})
+
+
+
+        return HttpResponse(response, content_type='application/json')
+
+
 @csrf_exempt
 def get_deposit_list(request):
     if request.method == 'POST':
@@ -204,7 +235,7 @@ def get_deposit_list(request):
 
 
         return HttpResponse(response, content_type='application/json')
-
+@csrf_exempt
 def get_gain_list(request):
     if request.method == 'POST':
         try:
@@ -225,6 +256,36 @@ def get_gain_list(request):
                 # Get Gains sum:
                 data = list(depo.values())
                 return JsonResponse({"status":"ok","gain":data,"gain_total":str(depo_total)}, safe=False)  # or JsonResponse({'data': data})
+
+
+
+            else:
+                        response = json.dumps({'status': 'error',"result": "user does not exist"})
+
+
+
+        return HttpResponse(response, content_type='application/json')
+@csrf_exempt
+def get_lose_list(request):
+    if request.method == 'POST':
+        try:
+            userid = request.POST['user_id']
+        except:
+            response = json.dumps({'status': 'error',"result": "user id missing"})
+        else:
+            response = {}
+
+            user = AuthUserRegistration.objects.get(id= userid).user
+            if user:
+                # Get Deposit sum:
+                depo = Losts.objects.filter(user=user)
+                depo_total =0
+                for i in depo:
+                    depo_total +=i.amount
+
+                # Get Gains sum:
+                data = list(depo.values())
+                return JsonResponse({"status":"ok","lose":data,"lose_total":str(depo_total)}, safe=False)  # or JsonResponse({'data': data})
 
 
 
