@@ -1,4 +1,4 @@
-from core.models import AuthUserRegistration, Deposits, Gains, Losts
+from core.models import AuthUserRegistration, Deposits, Gains, Losts, DepositRequest
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 import json
@@ -133,7 +133,7 @@ def get_summary(request):
                     losttotal+=i.amount
 
 
-                response = json.dumps({'status': 'ok', 'total_deposit': str(depo_total),"total_gain":str(gaintotal),'name':name, 'total_lose': str(losttotal)})
+                response = json.dumps({'status': 'ok', 'total_deposit': str(depo_total),"total_gain":str(gaintotal),'name':name, 'total_loss': str(losttotal)})
 
             else:
                         response = json.dumps({'status': 'error',"result": "user does not exist"})
@@ -141,6 +141,38 @@ def get_summary(request):
 
 
         return HttpResponse(response, content_type='application/json')
+
+
+
+
+@csrf_exempt
+def depositrequest(request):
+    if request.method == 'POST':
+        try:
+            userid = request.POST['user_id']
+            amt = request.POST['amount']
+        except:
+            response = json.dumps({'status': 'error',"result": "user id missing"})
+        else:
+            response = {}
+
+            user = AuthUserRegistration.objects.get(id= userid).user
+
+            if user:
+                # Get Deposit sum:
+                depo = DepositRequest(user=user,amount=amt)
+                depo.save()
+
+
+                response = json.dumps({'status': 'ok', 'result': ""})
+
+            else:
+                        response = json.dumps({'status': 'error',"result": "user does not exist"})
+
+
+
+        return HttpResponse(response, content_type='application/json')
+
 
 @csrf_exempt
 def get_deposit_list(request):
@@ -162,7 +194,7 @@ def get_deposit_list(request):
 
                 # Get Gains sum:
                 data = list(depo.values())
-                return JsonResponse({"deposit":data,"deposit_total":str(depo_total)}, safe=False)  # or JsonResponse({'data': data})
+                return JsonResponse({"status":"ok","deposit":data,"deposit_total":str(depo_total)}, safe=False)  # or JsonResponse({'data': data})
 
 
 
@@ -192,7 +224,7 @@ def get_gain_list(request):
 
                 # Get Gains sum:
                 data = list(depo.values())
-                return JsonResponse({"gain":data,"gain_total":str(depo_total)}, safe=False)  # or JsonResponse({'data': data})
+                return JsonResponse({"status":"ok","gain":data,"gain_total":str(depo_total)}, safe=False)  # or JsonResponse({'data': data})
 
 
 

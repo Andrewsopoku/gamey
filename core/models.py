@@ -46,6 +46,13 @@ class Losts(models.Model):
     amount = models.DecimalField(max_digits=8, decimal_places=4)
     created_at = models.DateField(auto_now_add=True)
 
+class DepositRequest(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    amount = models.DecimalField(max_digits=8, decimal_places=4)
+    created_at = models.DateField(auto_now_add=True)
+
+
 
 
 
